@@ -1,9 +1,12 @@
 package com.api.gbookpdf;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "com.api.gbookpdf")
 public class GbookpdfApplication {
 
 	public static void main(String[] args) {

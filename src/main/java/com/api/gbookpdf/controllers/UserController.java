@@ -1,7 +1,6 @@
 package com.api.gbookpdf.controllers;
 
 import com.api.gbookpdf.dtos.UserDTO;
-import com.api.gbookpdf.repositories.UserRepository;
 import com.api.gbookpdf.services.UserService;
 import com.api.gbookpdf.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
@@ -27,8 +27,8 @@ public class UserController {
     public ResponseEntity<Map<String, String>> save(@RequestBody UserDTO userDTO) {
         try {
             Map<String, String> response = userService.saveUser(userDTO);
-            if (response.get("code") != "202") {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            if (!Objects.equals(response.get("code"), "202")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
             }
 
             return ResponseEntity.accepted().body(response);

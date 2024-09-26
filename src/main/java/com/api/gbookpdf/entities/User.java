@@ -42,8 +42,9 @@ public class User implements UserDetails {
             return List.of(new SimpleGrantedAuthority(role.getName()), new SimpleGrantedAuthority("ADMIN"), new SimpleGrantedAuthority("GENERAL"));
         } else if (this.role.getId() == RoleEnum.ADMIN.getValue()) {
             return List.of(new SimpleGrantedAuthority(role.getName()), new SimpleGrantedAuthority("GENERAL"));
+        } else {
+            return List.of(new SimpleGrantedAuthority(role.getName()));
         }
-        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Override
