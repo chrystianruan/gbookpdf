@@ -1,6 +1,8 @@
 package com.api.gbookpdf.controllers;
 
 import com.api.gbookpdf.dtos.LoginDTO;
+import com.api.gbookpdf.dtos.UserAuthDTO;
+import com.api.gbookpdf.dtos.UserAuthSimpleDTO;
 import com.api.gbookpdf.entities.User;
 import com.api.gbookpdf.services.TokenService;
 import com.api.gbookpdf.utils.ResponseUtils;
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -26,16 +28,19 @@ public class AuthController {
     private final Logger log = Logger.getLogger(UserController.class.getName());
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> auth(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<Map<String, ?>> auth(@RequestBody LoginDTO loginDTO) {
         try {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(loginDTO.getLogin(), loginDTO.getPassword());
         Authentication auth = this.authenticationManager.authenticate(usernamePassword);
         if (!auth.isAuthenticated()) {
             return ResponseEntity.status(401).body(ResponseUtils.makeMessage("Nome de usuário ou senha inválidos"));
         }
-        String token = tokenService.createToken((User) auth.getPrincipal());
+        User user = (User) auth.getPrincipal();
+        String token = tokenService.createToken(user);
 
-        return ResponseEntity.ok(ResponseUtils.makeMessageWithToken("Usuário logado com sucesso!", token));
+        UserAuthDTO userAuthDTO = new UserAuthDTO(new UserAuthSimpleDTO(user.getName(), user.getRole().getName()), token);
+
+        return ResponseEntity.ok(ResponseUtils.makeMessageWithObject(userAuthDTO));
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(ResponseUtils.makeMessage("Erro ao tentar fazer login. Cheque seu nome de usuário e senha!"));
