@@ -18,15 +18,13 @@ import java.util.List;
 public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @Transactional
     public void addAuthor(AuthorDTO author) {
         try {
-            User user = new User();
-            user.setName(author.getName());
-            userRepository.save(user);
+            Author authorSave = new Author();
+            authorSave.setName(author.getName());
+            authorRepository.save(authorSave);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -49,7 +47,8 @@ public class AuthorService {
         }
     }
 
-    public void deleteAuthor(Long authorId) throws EmptyException {
+    public void deleteAuthor(String id) throws EmptyException {
+        Long authorId = Long.parseLong(HashUtils.decodeBase64(id));
         if (!authorRepository.existsById(authorId)) {
             throw new EmptyException("Autor não encontrado");
         }
@@ -72,5 +71,14 @@ public class AuthorService {
         }
         return authorDTOS;
     }
+    public AuthorDTO showAuthor(String id) throws EmptyException {
+        Long authorId = Long.parseLong(HashUtils.decodeBase64(id));
+        if (!authorRepository.existsById(authorId)) {
+            throw new EmptyException("Autor não encontrado");
+        }
+
+        return authorRepository.findOne(authorId).parseToDTO();
+    }
+
 
 }
