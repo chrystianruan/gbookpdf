@@ -34,7 +34,7 @@ public class AuthorService {
     @Transactional
     public void updateAuthor(String hashId, AuthorDTO authorDTO) throws Exception {
         try {
-            Long authorId = Long.parseLong(HashUtils.decodeBase64(hashId));
+            Long authorId = (Long) Long.parseLong(HashUtils.decodeBase64(hashId));
             if (!authorRepository.existsById(authorId)) {
                 throw new EmptyException("Autor não encontrado");
             }
@@ -48,7 +48,7 @@ public class AuthorService {
     }
 
     public void deleteAuthor(String id) throws EmptyException {
-        Long authorId = Long.parseLong(HashUtils.decodeBase64(id));
+        Long authorId = (Long) Long.parseLong(HashUtils.decodeBase64(id));
         if (!authorRepository.existsById(authorId)) {
             throw new EmptyException("Autor não encontrado");
         }
@@ -72,7 +72,7 @@ public class AuthorService {
         return authorDTOS;
     }
     public AuthorDTO showAuthor(String id) throws EmptyException {
-        Long authorId = Long.parseLong(HashUtils.decodeBase64(id));
+        Long authorId = (Long) Long.parseLong(HashUtils.decodeBase64(id));
         if (!authorRepository.existsById(authorId)) {
             throw new EmptyException("Autor não encontrado");
         }

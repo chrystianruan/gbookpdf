@@ -1,13 +1,10 @@
 package com.api.gbookpdf.services;
 
-import com.api.gbookpdf.dtos.AuthorDTO;
 import com.api.gbookpdf.dtos.SubjectDTO;
-import com.api.gbookpdf.entities.Author;
 import com.api.gbookpdf.entities.Subject;
 import com.api.gbookpdf.exceptions.AlreadyExistsException;
 import com.api.gbookpdf.exceptions.EmptyException;
 import com.api.gbookpdf.exceptions.ListEmptyException;
-import com.api.gbookpdf.exceptions.RegraDeNegocioException;
 import com.api.gbookpdf.repositories.SubjectRepository;
 import com.api.gbookpdf.utils.HashUtils;
 import jakarta.transaction.Transactional;
@@ -42,7 +39,7 @@ public class SubjectService {
     @Transactional
     public void updateSubject(String hashId, SubjectDTO subjectDTO) throws Exception {
         try {
-            Long subjectId = Long.parseLong(HashUtils.decodeBase64(hashId));
+            Long subjectId = (Long) Long.parseLong(HashUtils.decodeBase64(hashId));
             if (!subjectRepository.existsById(subjectId)) {
                 throw new EmptyException(model);
             }
@@ -59,7 +56,7 @@ public class SubjectService {
     }
 
     public void deleteSubject(String id) throws EmptyException {
-        Long authorId = Long.parseLong(HashUtils.decodeBase64(id));
+        Long authorId =  (Long) Long.parseLong(HashUtils.decodeBase64(id));
         if (!subjectRepository.existsById(authorId)) {
             throw new EmptyException(model);
         }
@@ -84,7 +81,7 @@ public class SubjectService {
     }
 
     public SubjectDTO showAuthor(String id) throws EmptyException {
-        Long subjectId = Long.parseLong(HashUtils.decodeBase64(id));
+        Long subjectId = (Long) Long.parseLong(HashUtils.decodeBase64(id));
         if (!subjectRepository.existsById(subjectId)) {
             throw new EmptyException("Autor não encontrado");
         }

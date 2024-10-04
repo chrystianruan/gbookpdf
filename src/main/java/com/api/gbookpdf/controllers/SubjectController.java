@@ -4,6 +4,7 @@ import com.api.gbookpdf.dtos.AuthorDTO;
 import com.api.gbookpdf.dtos.SubjectDTO;
 import com.api.gbookpdf.exceptions.AlreadyExistsException;
 import com.api.gbookpdf.exceptions.EmptyException;
+import com.api.gbookpdf.exceptions.ListEmptyException;
 import com.api.gbookpdf.services.AuthorService;
 import com.api.gbookpdf.services.SubjectService;
 import com.api.gbookpdf.utils.ResponseUtils;
@@ -33,8 +34,7 @@ public class SubjectController {
             return ResponseEntity.status(HttpStatus.CREATED).build() ;
         } catch (AlreadyExistsException alreadyExistsException) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseUtils.makeMessage(alreadyExistsException.getMessage()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(ResponseUtils.makeMessage("Erro interno ao realizar cadastro de autor"));
         }
@@ -56,9 +56,9 @@ public class SubjectController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, ?>> get(@PathVariable String id) {
         try {
-            AuthorDTO authorDTO = authorService.showAuthor(id);
+            SubjectDTO subjectDTO = subjectService.showAuthor(id);
 
-            return ResponseEntity.ok(ResponseUtils.makeMessageWithObject(authorDTO));
+            return ResponseEntity.ok(ResponseUtils.makeMessageWithObject(subjectDTO));
         } catch (EmptyException emptyException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseUtils.makeMessage("Autor não encontrado"));
         }
@@ -67,11 +67,11 @@ public class SubjectController {
     @GetMapping()
     public ResponseEntity<Map<String, ?>> getAll() {
         try {
-            List<AuthorDTO> list = authorService.list();
+            List<SubjectDTO> list = subjectService.list();
 
             return ResponseEntity.ok(ResponseUtils.makeMessageWithList(list));
-        } catch (EmptyException emptyException) {
-            return ResponseEntity.notFound().build();
+        } catch (ListEmptyException emptyException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseUtils.makeMessage(emptyException.getMessage()));
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseUtils.makeMessage("Erro interno ao buscar autores"));
@@ -82,7 +82,7 @@ public class SubjectController {
     @DeleteMapping("/del/{id}")
     public ResponseEntity<Map<String, ?>> delete(@PathVariable String id) {
         try {
-            authorService.deleteAuthor(id);
+            subjectService.deleteSubject(id);
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         } catch (EmptyException emptyException) {
