@@ -16,6 +16,7 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "book")
 
     public SubjectDTO parseToDTO() {
         SubjectDTO subjectDTO = new SubjectDTO();

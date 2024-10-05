@@ -1,11 +1,11 @@
 package com.api.gbookpdf.services;
 
+import com.api.gbookpdf.entities.Book;
 import com.api.gbookpdf.exceptions.EmptyException;
 import com.api.gbookpdf.dtos.AuthorDTO;
 import com.api.gbookpdf.entities.Author;
-import com.api.gbookpdf.entities.User;
 import com.api.gbookpdf.repositories.AuthorRepository;
-import com.api.gbookpdf.repositories.UserRepository;
+import com.api.gbookpdf.repositories.BookRepository;
 import com.api.gbookpdf.utils.HashUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,8 @@ import java.util.List;
 public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     @Transactional
     public void addAuthor(AuthorDTO author) {
@@ -34,7 +36,7 @@ public class AuthorService {
     @Transactional
     public void updateAuthor(String hashId, AuthorDTO authorDTO) throws Exception {
         try {
-            Long authorId = (Long) Long.parseLong(HashUtils.decodeBase64(hashId));
+            Long authorId = Long.parseLong(HashUtils.decodeBase64(hashId));
             if (!authorRepository.existsById(authorId)) {
                 throw new EmptyException("Autor não encontrado");
             }
@@ -48,11 +50,25 @@ public class AuthorService {
     }
 
     public void deleteAuthor(String id) throws EmptyException {
-        Long authorId = (Long) Long.parseLong(HashUtils.decodeBase64(id));
+        Long authorId = Long.parseLong(HashUtils.decodeBase64(id));
         if (!authorRepository.existsById(authorId)) {
             throw new EmptyException("Autor não encontrado");
         }
+        for (Book book : bookRepository.findAllByAuthor(authorRepository.findOne(authorId))) {
+            book.setAuthor(authorRepository.findOne((Long.valueOf(1))));
+            bookRepository.save(book);
+        }
         authorRepository.deleteById(authorId);
+    }
+
+    public void deleteAuthorAndBooks(AuthorDTO authorDTO) throws EmptyException {
+        Long authorId = Long.parseLong(HashUtils.decodeBase64(authorDTO.getId()));
+        if (!authorRepository.existsById(authorId)) {
+            throw new EmptyException("Autor não encontrado");
+        }
+        bookRepository.deleteAll(bookRepository.findAllByAuthor(authorRepository.findOne(authorId)));
+        authorRepository.deleteById(authorId);
+
     }
 
     public List<AuthorDTO> list() throws EmptyException {
