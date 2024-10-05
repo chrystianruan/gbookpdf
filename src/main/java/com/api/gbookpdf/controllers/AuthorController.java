@@ -40,10 +40,10 @@ public class AuthorController {
             authorService.updateAuthor(id, authorDTO);
             return ResponseEntity.ok(ResponseUtils.makeMessage("Autor atualizado com sucesso"));
         } catch (EmptyException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(e.getStatus()).body(ResponseUtils.makeMessage(e.getMessage()));
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseUtils.makeMessage("Erro interno ao realizar update de autor"));
+            return ResponseEntity.internalServerError().body(ResponseUtils.makeMessage("Erro interno ao realizar update de autor"));
         }
     }
     @GetMapping("/{id}")

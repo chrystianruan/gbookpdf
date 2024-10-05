@@ -76,7 +76,7 @@ public class SubjectService {
     public void deleteSubjectAndBooks(AuthorDTO authorDTO) throws EmptyException {
         Long authorId = Long.parseLong(HashUtils.decodeBase64(authorDTO.getId()));
         if (!subjectRepository.existsById(authorId)) {
-            throw new EmptyException("Autor não encontrado");
+            throw new EmptyException(model);
         }
         bookRepository.deleteAll(bookRepository.findAllBySubject(subjectRepository.findOne(authorId)));
         subjectRepository.deleteById(authorId);
@@ -102,7 +102,7 @@ public class SubjectService {
     public SubjectDTO showAuthor(String id) throws EmptyException {
         Long subjectId = Long.parseLong(HashUtils.decodeBase64(id));
         if (!subjectRepository.existsById(subjectId)) {
-            throw new EmptyException("Autor não encontrado");
+            throw new EmptyException(model);
         }
 
         return subjectRepository.findOne(subjectId).parseToDTO();
