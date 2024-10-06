@@ -2,6 +2,7 @@ package com.api.gbookpdf.controllers;
 
 import com.api.gbookpdf.dtos.AuthorDTO;
 import com.api.gbookpdf.exceptions.EmptyException;
+import com.api.gbookpdf.exceptions.ListEmptyException;
 import com.api.gbookpdf.repositories.AuthorRepository;
 import com.api.gbookpdf.services.AuthorService;
 import com.api.gbookpdf.utils.ResponseUtils;
@@ -63,7 +64,7 @@ public class AuthorController {
             List<AuthorDTO> list = authorService.list();
 
             return ResponseEntity.ok(ResponseUtils.makeMessageWithList(list));
-        } catch (EmptyException emptyException) {
+        } catch (ListEmptyException emptyException) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.info(e.getMessage());
