@@ -12,4 +12,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query("select count(subject) > 1 from Subject subject where subject.name ilike concat('%', :name, '%')")
     boolean existsByName(String name);
+
+    @Query("select count(subject) > 1 from Subject subject where subject.name ilike concat('%', :name, '%') and subject <> ?2")
+    boolean existsByNameAndCurrentObjectDifferent(String name, Subject subject);
 }

@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.List;
+
 @Entity
 @Getter @Setter
 @SQLDelete(sql = "UPDATE authors SET deleted_at = NOW() WHERE id=?")
@@ -18,6 +20,10 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "book")
+    private List<Book> books;
+
+
 
     public AuthorDTO parseToDTO() {
         AuthorDTO authorDTO = new AuthorDTO();
