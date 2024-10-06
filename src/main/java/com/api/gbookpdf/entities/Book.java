@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "books")
 @Getter @Setter
@@ -21,6 +23,8 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "subject'_id")
     private Subject subject;
+    @OneToMany(mappedBy = "book")
+    private List<User> users;
 
     public BookDTO toDTO() {
         BookDTO bookDTO = new BookDTO();
